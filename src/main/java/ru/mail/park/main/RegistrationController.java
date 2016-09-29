@@ -26,7 +26,11 @@ public class RegistrationController {
         this.sessionService = sessionService;
     }
 
-
+    @CrossOrigin(allowCredentials = "true")
+    @RequestMapping(path = "/hello", method = RequestMethod.GET)
+    public ResponseEntity hello(HttpSession httpSession) {
+        return ResponseEntity.status(HttpStatus.OK).body(" Hello! ");
+    }
 
     @CrossOrigin(allowCredentials = "true")
     @RequestMapping(path = "/signup", method = RequestMethod.POST)
