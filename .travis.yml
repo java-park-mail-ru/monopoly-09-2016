@@ -5,6 +5,6 @@ deploy:
   provider: heroku
   api_key:
     secure: TBEYOVAnc9Y+Jov+yuf4x8jMyIi65M6r8YOA7QqkumUo8g+49WdvRsovhJ1t50VM0lXGZzrVqE6laD7ahVXViaIMKOTAYdjkt7OAX8Dr2WTWV0qiWnZWJ6Dc4WVJZqG0PLdv4mdUsFfyfajcR56IrxIE9PseQHUQVtL4fDLSNTOkgNDZxwR/PxP4q4bM2xBPTS0TnUkD1xJYMeGfYGZomtImVogO6gXt8dh3EatVZxbv0UqaUyIp3m5+RQ/W0wc0JIRfglahjPS9Fe8S5Mbgw2m6oA/o2R0oiCGRqCC1Zu4O6W2E22s9ejKd9+YZFQ25KEMoNm++a0QnUyWzfz+rAdgOEo8iguyF8Yf4EVHOoxeUCwJ1giVXE1il7H7G1kdDRBb0HlwLlaac9z9N1xLeTHvuA9wofHmDEYgPUw/RR9ONpyT+F9GcVWWNaXx2uH7FYdc1HJCotXGrz/mDKlZ1jeKYHuzXpwB2Viz0MMnEiwAfAg8w0ECc6H6Tj05GQVUr5OP9HGfhEqcehSm8i1pfqEREisKg3e9vBiTfLss5CZ5mf5aVk4ULH7KGk9mJTc2YnxHQ7RDRUBMZEVVE45MoKfl4FYZpQHEhwpfaD8qR0aWILd+OrF56/4x3+SLPxd7/T0KmrDqu/9XljPF//HQzxGdVoKxJjcU9F4z1zmxjm9k=
-  app: stark-thicket-66016
+  app: monopolygames
   on:
     repo: AndrySar/monopoly-09-2016
