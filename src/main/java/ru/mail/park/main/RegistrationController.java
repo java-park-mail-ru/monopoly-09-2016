@@ -28,8 +28,8 @@ public class RegistrationController {
 
     @ResponseBody
     @RequestMapping("hello")
-    public String hello() {
-        return "Hello World!";
+    public String hello(HttpSession httpSession) {
+        return "Hello World! current session " + httpSession.getId();
     }
 
     @CrossOrigin(allowCredentials = "true")
