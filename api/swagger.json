@@ -7,6 +7,16 @@
     },
     "host": "monopolygames.herokuapp.com",
     "basePath": "/api",
+    "tags": [
+        {
+            "name": "user",
+            "description": "User api"
+        },
+        {
+            "name": "session",
+            "description": "Session api"
+        }
+    ],
     "schemes": [
         "https"
     ],
@@ -19,6 +29,9 @@
     "paths": {
         "/user": {
             "post": {
+                "tags": [
+                    "user"
+                ],
                 "description": "Creates a new user. Duplicates are not allowed",
                 "operationId": "addUser",
                 "produces": [
@@ -53,6 +66,9 @@
         },
         "/session": {
             "post": {
+                "tags": [
+                    "session"
+                ],
                 "description": "Authorization user",
                 "operationId": "authUser",
                 "produces": [
@@ -85,6 +101,9 @@
                 }
             },
             "get": {
+                "tags": [
+                    "session"
+                ],
                 "description": "Check user session",
                 "operationId": "checkSession",
                 "responses": {
@@ -103,6 +122,9 @@
                 }
             },
             "delete": {
+                "tags": [
+                    "session"
+                ],
                 "description": "User logout",
                 "operationId": "logoutUser",
                 "responses": {
