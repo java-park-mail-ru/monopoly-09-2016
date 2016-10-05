@@ -1,7 +1,7 @@
 package ru.mail.park.model;
 
 /**
- * Created by user on 27.09.16.
+ * Created by Andry on 27.09.16.
  */
 public class UserProfile {
     private String name;

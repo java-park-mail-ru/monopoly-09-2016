@@ -7,7 +7,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import ru.mail.park.model.UserProfile;
 import ru.mail.park.services.AccountService;
-import ru.mail.park.services.SessionService;
 
 import javax.servlet.http.HttpSession;
 
@@ -17,16 +16,14 @@ import javax.servlet.http.HttpSession;
 @RestController
 public class RegistrationController {
     private final AccountService accountService;
-    private final SessionService sessionService;
 
     @Autowired
-    public RegistrationController(AccountService accountService, SessionService sessionService) {
+    public RegistrationController(AccountService accountService) {
         this.accountService = accountService;
-        this.sessionService = sessionService;
     }
 
     @ResponseBody
-    @RequestMapping("hello")
+    @RequestMapping("/hello")
     public String hello(HttpSession httpSession) {
         return "Hello World! current session " + httpSession.getId();
     }
@@ -54,14 +51,15 @@ public class RegistrationController {
 
     @CrossOrigin(allowCredentials = "true")
     @RequestMapping(path = "/api/session", method = RequestMethod.GET)
-    public ResponseEntity createSession(HttpSession httpSession)
-    {
-        final String sessionId = httpSession.getId();
-        System.out.println(sessionId);
+    public ResponseEntity createSession(HttpSession httpSession) {
 
-        String email = sessionService.GetEmailByCookie(sessionId);
+        String email = httpSession.getAttribute("email").toString();
+        if(StringUtils.isEmpty(email))
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("Session is invalid"));
 
-        if(!StringUtils.isEmpty(email))
+        UserProfile user = accountService.getUser(email);
+
+        if(user != null)
             return ResponseEntity.ok(new SuccessResponse(email));
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("Session is invalid"));
@@ -69,11 +67,9 @@ public class RegistrationController {
 
     @CrossOrigin(allowCredentials = "true")
     @RequestMapping(path = "/api/session", method = RequestMethod.DELETE)
-    public ResponseEntity deleteSession(HttpSession httpSession)
-    {
-        final String sessionId = httpSession.getId();
-        sessionService.DeleteSession(sessionId);
+    public ResponseEntity deleteSession(HttpSession httpSession) {
 
+        httpSession.removeAttribute("email");
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body("{}");
     }
 
@@ -92,7 +88,7 @@ public class RegistrationController {
 
         if ( user != null && user.getPassword().equals(password)) {
 
-            sessionService.AddSession(httpSession.getId(), email);
+            httpSession.setAttribute("email", email);
             return ResponseEntity.ok(new SuccessResponse(user.getEmail()));
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("Email or password is incorrect"));
