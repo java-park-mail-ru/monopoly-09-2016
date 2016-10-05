@@ -16,10 +16,6 @@ public class UserProfile {
 
     public String getEmail() { return email; }
 
-    public String getName() {
-        return name;
-    }
-
     public String getPassword() {
         return password;
     }

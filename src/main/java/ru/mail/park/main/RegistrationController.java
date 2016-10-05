@@ -10,10 +10,9 @@ import ru.mail.park.services.AccountService;
 import ru.mail.park.services.SessionService;
 
 import javax.servlet.http.HttpSession;
-import javax.validation.constraints.Null;
 
 /**
- * Created by user on 27.09.16.
+ * Created by Andry on 27.09.16.
  */
 @RestController
 public class RegistrationController {
@@ -33,8 +32,8 @@ public class RegistrationController {
     }
 
     @CrossOrigin(allowCredentials = "true")
-    @RequestMapping(path = "/signup", method = RequestMethod.POST)
-    public ResponseEntity login(@RequestBody RegistrationRequest body, HttpSession httpSession) {
+    @RequestMapping(path = "/api/user", method = RequestMethod.POST)
+    public ResponseEntity login(@RequestBody RegistrationRequest body) {
 
         final String name = body.getName();
         final String password = body.getPassword();
@@ -42,11 +41,11 @@ public class RegistrationController {
         if (StringUtils.isEmpty(name)
                 || StringUtils.isEmpty(password)
                 || StringUtils.isEmpty(email)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{ Some fields is invalid }");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("Some fields is invalid"));
         }
         final UserProfile existingUser = accountService.getUser(email);
         if (existingUser != null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{ Email is already in use! }");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("Email already exist"));
         }
 
         accountService.addUser(email, password, name);
@@ -54,7 +53,7 @@ public class RegistrationController {
     }
 
     @CrossOrigin(allowCredentials = "true")
-    @RequestMapping(path = "/session", method = RequestMethod.GET)
+    @RequestMapping(path = "/api/session", method = RequestMethod.GET)
     public ResponseEntity createSession(HttpSession httpSession)
     {
         final String sessionId = httpSession.getId();
@@ -62,34 +61,32 @@ public class RegistrationController {
 
         String email = sessionService.GetEmailByCookie(sessionId);
 
-        if( email != null )
+        if(!StringUtils.isEmpty(email))
             return ResponseEntity.ok(new SuccessResponse(email));
 
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("{ Session is invalid }");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("Session is invalid"));
     }
 
     @CrossOrigin(allowCredentials = "true")
-    @RequestMapping(path = "/session", method = RequestMethod.DELETE)
+    @RequestMapping(path = "/api/session", method = RequestMethod.DELETE)
     public ResponseEntity deleteSession(HttpSession httpSession)
     {
         final String sessionId = httpSession.getId();
-        System.out.println(sessionId);
-
         sessionService.DeleteSession(sessionId);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body("{}");
     }
 
     @CrossOrigin(allowCredentials = "true")
-    @RequestMapping(path = "/signin", method = RequestMethod.POST)
-    public ResponseEntity auth(@RequestBody LoginRequest body, HttpSession httpSession) {
+    @RequestMapping(path = "/api/session", method = RequestMethod.POST)
+    public ResponseEntity auth(@RequestBody AuthRequest body, HttpSession httpSession) {
 
         final String password = body.getPassword();
         final String email = body.getEmail();
 
         if (StringUtils.isEmpty(password)
                 || StringUtils.isEmpty(email)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{ Email or password is incorrect }");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("Email or password is incorrect"));
         }
         final UserProfile user = accountService.getUser(email);
 
@@ -98,7 +95,7 @@ public class RegistrationController {
             sessionService.AddSession(httpSession.getId(), email);
             return ResponseEntity.ok(new SuccessResponse(user.getEmail()));
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{ Email or password is incorrect }");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("Email or password is incorrect"));
     }
 
     private static final class RegistrationRequest {
@@ -106,8 +103,10 @@ public class RegistrationController {
         private String name;
         private String password;
 
+        @SuppressWarnings("unused")
         public RegistrationRequest () {}
 
+        @SuppressWarnings("unused")
         public RegistrationRequest(String email, String name, String password) {
             this.email = email;
             this.name = name;
@@ -127,26 +126,17 @@ public class RegistrationController {
             return email;
         }
 
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public void setPassword(String password) {
-            this.password = password;
-        }
-
-        public void setEmail(String email) {
-            this.email = email;
-        }
     }
 
-    private static final class LoginRequest {
+    private static final class AuthRequest {
         private String email;
         private String password;
 
-        public LoginRequest () {}
+        @SuppressWarnings("unused")
+        public AuthRequest () {}
 
-        public LoginRequest(String email, String password) {
+        @SuppressWarnings("unused")
+        public AuthRequest(String email, String password) {
             this.email = email;
             this.password = password;
 
@@ -160,10 +150,12 @@ public class RegistrationController {
             return email;
         }
 
+        @SuppressWarnings("unused")
         public void setPassword(String password) {
             this.password = password;
         }
 
+        @SuppressWarnings("unused")
         public void setEmail(String email) {
             this.email = email;
         }
@@ -179,6 +171,17 @@ public class RegistrationController {
         @SuppressWarnings("unused")
         public String getEmail() {
             return email;
+        }
+    }
+
+    private static final class ErrorResponse {
+        private String message;
+
+        private ErrorResponse(String message){ this.message = message; }
+
+        @SuppressWarnings("unused")
+        public String getMessage() {
+            return message;
         }
     }
 
