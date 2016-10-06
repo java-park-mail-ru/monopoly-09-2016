@@ -12,14 +12,14 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class AccountService {
-    private Map<String, UserProfile> userNameToUser = new ConcurrentHashMap<String, UserProfile>();
+    private Map<String, UserProfile> userEmailToUser = new ConcurrentHashMap<String, UserProfile>();
 
     public UserProfile addUser(String email, String password, String name) {
         final UserProfile userProfile = new UserProfile(email, password, name);
-        userNameToUser.put(email, userProfile);
+        userEmailToUser.put(email, userProfile);
         return userProfile;
     }
     public UserProfile getUser(String email) {
-        return userNameToUser.get(email);
+        return userEmailToUser.get(email);
     }
 }

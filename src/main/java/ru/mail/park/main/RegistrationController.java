@@ -22,13 +22,7 @@ public class RegistrationController {
         this.accountService = accountService;
     }
 
-    @ResponseBody
-    @RequestMapping("/hello")
-    public String hello(HttpSession httpSession) {
-        return "Hello World! current session " + httpSession.getId();
-    }
 
-    @CrossOrigin(allowCredentials = "true")
     @RequestMapping(path = "/api/user", method = RequestMethod.POST)
     public ResponseEntity login(@RequestBody RegistrationRequest body) {
 
@@ -49,7 +43,6 @@ public class RegistrationController {
         return ResponseEntity.ok(new SuccessResponse(email));
     }
 
-    @CrossOrigin(allowCredentials = "true")
     @RequestMapping(path = "/api/session", method = RequestMethod.GET)
     public ResponseEntity createSession(HttpSession httpSession) {
 
@@ -65,15 +58,13 @@ public class RegistrationController {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("Session is invalid"));
     }
 
-    @CrossOrigin(allowCredentials = "true")
     @RequestMapping(path = "/api/session", method = RequestMethod.DELETE)
     public ResponseEntity deleteSession(HttpSession httpSession) {
 
-        httpSession.removeAttribute("email");
+        httpSession.invalidate();
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body("{}");
     }
 
-    @CrossOrigin(allowCredentials = "true")
     @RequestMapping(path = "/api/session", method = RequestMethod.POST)
     public ResponseEntity auth(@RequestBody AuthRequest body, HttpSession httpSession) {
 
