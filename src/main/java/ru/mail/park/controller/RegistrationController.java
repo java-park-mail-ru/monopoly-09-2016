@@ -1,12 +1,13 @@
-package ru.mail.park.main;
+package ru.mail.park.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import ru.mail.park.jpa.JpaService;
 import ru.mail.park.model.UserProfile;
-import ru.mail.park.services.AccountService;
+import ru.mail.park.services.IAccountService;
 
 import javax.servlet.http.HttpSession;
 
@@ -15,11 +16,11 @@ import javax.servlet.http.HttpSession;
  */
 @RestController
 public class RegistrationController {
-    private final AccountService accountService;
+    private final IAccountService accountService;
 
     @Autowired
-    public RegistrationController(AccountService accountService) {
-        this.accountService = accountService;
+    public RegistrationController(JpaService jpaService) {
+        this.accountService = jpaService;
     }
 
 
