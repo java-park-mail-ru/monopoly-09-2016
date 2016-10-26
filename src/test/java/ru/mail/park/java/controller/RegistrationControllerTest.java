@@ -1,6 +1,7 @@
 package ru.mail.park.java.controller;
 
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,20 +31,23 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @RunWith(SpringRunner.class)
 public class RegistrationControllerTest {
-    /*@MockBean
+    @Autowired
     private JpaService accountService;
 
     @Autowired
     private TestRestTemplate restTemplate;
-*/
+
+    @Before
+    public void init(){
+        accountService.addUser("andy@mail", "12345", "andy");
+    }
+
     @Test
     public void testLogin() {
         login();
     }
 
     private List<String> login() {
-   /*     when(accountService.getUser(anyString())).thenReturn(new UserProfile("andy@mail", "12345", "andy"));
-
         HttpEntity requestEntity = new HttpEntity(new AuthRequest("andy@mail", "12345"));
         ResponseEntity<Response> loginResp = restTemplate.exchange("/api/session", HttpMethod.POST, requestEntity, Response.class);
         assertEquals(HttpStatus.OK, loginResp.getStatusCode());
@@ -55,27 +59,25 @@ public class RegistrationControllerTest {
         assertNotNull(resp);
         assertEquals("andy@mail", resp.getEmail());
 
-        return coockies;*/
-        return new ArrayList<String>();
+        return coockies;
     }
 
 
     @Test
     public void testMe() {
-        /*List<String> coockies = login();
+        List<String> coockies = login();
 
         HttpHeaders requestHeaders = new HttpHeaders();
         requestHeaders.put(HttpHeaders.COOKIE, coockies);
         HttpEntity requestEntity = new HttpEntity(requestHeaders);
 
-        when(accountService.getUser(anyString())).thenReturn(new UserProfile("andy@mail", "12345", "andy"));
         ResponseEntity<Response> meResp = restTemplate.exchange("/api/session", HttpMethod.GET, requestEntity, Response.class);
 
         assertEquals(HttpStatus.OK, meResp.getStatusCode());
 
         Response resp = meResp.getBody();
         assertNotNull(resp);
-        assertEquals("andy@mail", resp.getEmail());*/
+        assertEquals("andy@mail", resp.getEmail());
     }
 
 

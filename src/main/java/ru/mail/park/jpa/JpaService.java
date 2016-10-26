@@ -8,6 +8,8 @@ import ru.mail.park.services.IAccountService;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by Andry on 23.10.16.
@@ -38,10 +40,19 @@ public class JpaService  implements IAccountService{
             return ((UserEntity) em.createQuery("SELECT c FROM UserEntity c WHERE c.email = :custEmail")
                     .setParameter("custEmail", email)
                     .setMaxResults(1).getSingleResult()).toDto();
-        }catch(NoResultException e){
+        }catch(NoResultException e) {
             return null;
         }
 
+    }
+
+    @Override
+    public List<UserProfile> getAllUsers(){
+        return em.createQuery("select c from UserEntity c", UserEntity.class)
+                .getResultList()
+                .stream()
+                .map(UserEntity::toDto)
+                .collect(Collectors.toList());
     }
 
 

@@ -53,8 +53,7 @@ public class RegistrationController {
 
         UserProfile user = accountService.getUser(email);
 
-        if(user != null)
-            return ResponseEntity.ok(new SuccessResponse(email));
+        if(user != null) return ResponseEntity.ok(new SuccessResponse(email));
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("Session is invalid"));
     }
