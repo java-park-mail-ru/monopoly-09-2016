@@ -59,6 +59,8 @@ public class RegistrationControllerTest {
         assertNotNull(resp);
         assertEquals("andy@mail", resp.getEmail());
 
+        List<UserProfile> user = accountService.getAllUsers();
+
         return coockies;
     }
 
@@ -78,6 +80,8 @@ public class RegistrationControllerTest {
         Response resp = meResp.getBody();
         assertNotNull(resp);
         assertEquals("andy@mail", resp.getEmail());
+
+        List<UserProfile> user = accountService.getAllUsers();
     }
 
 
