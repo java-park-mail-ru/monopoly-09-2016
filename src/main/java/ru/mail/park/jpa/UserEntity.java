@@ -22,14 +22,15 @@ public class UserEntity {
     @Column
     private long id;
 
-    @Column(name = "email")
-    private String email;
+    @Column(name = "username")
+    private String username;
 
     @Column(name = "password")
     private String password;
 
-    @Column(name = "name")
-    private String name;
+    @Column(name = "rank")
+    private int rank;
+
 
     public long getId() {
         return id;
@@ -39,12 +40,25 @@ public class UserEntity {
         this.id = id;
     }
 
-    public String getEmail() {
-        return email;
+    public UserEntity(){}
+
+    public UserEntity(String username, String password){
+        this.username = username;
+        this.password = password;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public UserEntity(String username, String password, int rank){
+        this.username = username;
+        this.password = password;
+        this.rank = rank;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String email) {
+        this.username = email;
     }
 
     public String getPassword() {
@@ -55,15 +69,16 @@ public class UserEntity {
         this.password = password;
     }
 
-    public String getName() {
-        return name;
+    public int getRank() {
+
+        return this.rank;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setRank(int rank) {
+        this.rank = rank;
     }
 
     public UserProfile toDto() {
-        return new UserProfile(email, password, name);
+        return new UserProfile(username, password, rank);
     }
 }

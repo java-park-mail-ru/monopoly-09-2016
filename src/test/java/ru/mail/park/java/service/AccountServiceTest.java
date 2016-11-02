@@ -4,9 +4,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrint;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
+import ru.mail.park.exception.UserExistsException;
 import ru.mail.park.jpa.JpaService;
 import ru.mail.park.model.UserProfile;
 
@@ -15,38 +18,69 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 /**
  * Created by Andry on 26.10.16.
  */
 
-@SpringBootTest(webEnvironment = RANDOM_PORT)
 @RunWith(SpringRunner.class)
+@SpringBootTest
+@AutoConfigureMockMvc(print = MockMvcPrint.NONE)
+@Transactional
 public class AccountServiceTest {
 
     @Autowired
     private JpaService accountService;
 
-    @Test
-    public void addUsers() {
-        UserProfile user = accountService.addUser("jon@mail.ru", "12345", "jon");
-        assertNotNull(user);
-
-        user = accountService.addUser("miki@mail.ru", "12345", "miki");
-        assertNotNull(user);
-
-        user = accountService.addUser("jim@mail.ru", "12345", "jim");
-        assertNotNull(user);
+    @Before
+    public void init() {
+        try {
+            accountService.addUser("jon", "12345");
+            accountService.addUser("miki", "12345");
+            accountService.addUser("jim", "12345");
+        }catch (UserExistsException e)
+        {
+            assertNotNull(null);
+        }
     }
 
     @Test
-    public void getUserByEmail() {
-        UserProfile user = accountService.getUser("jon@mail.ru");
+    public void addUsers() {
+
+        try {
+            UserProfile user = accountService.addUser("jon", "12345");
+            assertNotNull(user);
+
+            user = accountService.addUser("miki", "12345");
+            assertNotNull(user);
+
+            user = accountService.addUser("jim", "12345");
+            assertNotNull(user);
+        }catch (UserExistsException e) {
+            assertNotNull(null);
+        }
+    }
+
+    @Test
+    public void addExistsUsers() {
+
+        List<UserProfile> users = accountService.getAllUsers();
+
+        try {
+            UserProfile user = accountService.addUser("jon", "12345"); // this user exists
+
+            // users = accountService.getAllUsers();
+            assertNotNull(null);
+        }catch (UserExistsException e) {
+        }
+    }
+
+    @Test
+    public void getUserByUsername() {
+        UserProfile user = accountService.getUser("jon");
         assertNotNull(user);
-        assertEquals("jon@mail.ru", user.getEmail());
+        assertEquals("jon", user.getUsername());
         assertEquals("12345", user.getPassword());
-        assertEquals("jon", user.getName());
     }
 
     @Test
@@ -54,17 +88,9 @@ public class AccountServiceTest {
         List<UserProfile> users = accountService.getAllUsers();
         assertEquals(users.size(), 3);
 
-        UserProfile user = accountService.getUser("jon@mail.ru");
-        assertNotNull(user);
-        assertEquals("jon@mail.ru", user.getEmail());
-
-        user = accountService.getUser("miki@mail.ru");
-        assertNotNull(user);
-        assertEquals("miki@mail.ru", user.getEmail());
-
-        user = accountService.getUser("jim@mail.ru");
-        assertNotNull(user);
-        assertEquals("jim@mail.ru", user.getEmail());
+        assertEquals("jon", users.get(0).getUsername());
+        assertEquals("miki", users.get(1).getUsername());
+        assertEquals("jim", users.get(2).getUsername());
 
     }
 }

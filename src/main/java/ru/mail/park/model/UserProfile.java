@@ -4,25 +4,30 @@ package ru.mail.park.model;
  * Created by Andry on 27.09.16.
  */
 public class UserProfile {
-    private String name;
-    private String email;
+    private String username;
     private String password;
+    private int rank;
 
     public UserProfile(){}
 
-    public UserProfile(String email, String password, String name) {
-        this.name = name;
-        this.email = email;
+    public UserProfile(String username, String password) {
+        this.username = username;
         this.password = password;
     }
 
-    public String getEmail() { return email; }
+    public UserProfile(String username, String password, int rank) {
+        this.username = username;
+        this.password = password;
+        this.rank = rank;
+    }
+
+    public String getUsername() { return username; }
 
     public String getPassword() {
         return password;
     }
 
-    public String getName() {
-        return name;
+    public int getRank() {
+        return this.rank;
     }
 }

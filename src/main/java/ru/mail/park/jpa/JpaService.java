@@ -2,6 +2,8 @@ package ru.mail.park.jpa;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.mail.park.exception.JpaException;
+import ru.mail.park.exception.UserExistsException;
 import ru.mail.park.model.UserProfile;
 import ru.mail.park.services.IAccountService;
 
@@ -23,22 +25,24 @@ public class JpaService  implements IAccountService{
     private EntityManager em;
 
     @Override
-    public UserProfile addUser(String email, String password, String name){
-        UserEntity entity = new UserEntity();
-        entity.setEmail(email);
-        entity.setName(name);
-        entity.setPassword(password);
+    public UserProfile addUser(String username, String password) throws UserExistsException{
+        try {
+            UserEntity entity = new UserEntity(username, password);
 
-        em.persist(entity);
-        return entity.toDto();
+            em.persist(entity);
+            return entity.toDto();
+        }catch (javax.persistence.PersistenceException e)
+        {
+            throw new UserExistsException(e);
+        }
     }
 
 
     @Override
-    public UserProfile getUser(String email){
+    public UserProfile getUser(String username){
         try {
-            return ((UserEntity) em.createQuery("SELECT c FROM UserEntity c WHERE c.email = :custEmail")
-                    .setParameter("custEmail", email)
+            return ((UserEntity) em.createQuery("SELECT u FROM UserEntity u WHERE u.username = :custUsername")
+                    .setParameter("custUsername", username)
                     .setMaxResults(1).getSingleResult()).toDto();
         }catch(NoResultException e) {
             return null;
@@ -48,7 +52,7 @@ public class JpaService  implements IAccountService{
 
     @Override
     public List<UserProfile> getAllUsers(){
-        return em.createQuery("select c from UserEntity c", UserEntity.class)
+        return em.createQuery("select u from UserEntity u", UserEntity.class)
                 .getResultList()
                 .stream()
                 .map(UserEntity::toDto)
