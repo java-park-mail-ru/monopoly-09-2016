@@ -27,6 +27,7 @@ public class UserProfile {
         return password;
     }
 
+    @SuppressWarnings("unused")
     public int getRank() {
         return this.rank;
     }

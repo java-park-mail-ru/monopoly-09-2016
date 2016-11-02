@@ -1,6 +1,5 @@
 package ru.mail.park.services;
 
-import ru.mail.park.exception.JpaException;
 import ru.mail.park.exception.UserExistsException;
 import ru.mail.park.model.UserProfile;
 
@@ -11,12 +10,10 @@ import java.util.List;
  */
 public interface IAccountService {
 
-    public UserProfile addUser(String email, String password) throws UserExistsException;
+    UserProfile addUser(String email, String password) throws UserExistsException;
 
-    public UserProfile getUser(String email);
+    UserProfile getUser(String email);
 
-    public List<UserProfile> getAllUsers();
-
-
+    List<UserProfile> getAllUsers();
 
 }

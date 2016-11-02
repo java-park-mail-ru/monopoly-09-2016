@@ -6,6 +6,7 @@ package ru.mail.park.exception;
 public class UserExistsException extends JpaException {
     private static final String MESSAGE = "User already exists";
 
+    @SuppressWarnings("unused")
     public UserExistsException() {
         super(MESSAGE);
     }

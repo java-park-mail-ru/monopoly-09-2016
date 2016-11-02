@@ -40,6 +40,7 @@ public class UserEntity {
         this.id = id;
     }
 
+    @SuppressWarnings("unused")
     public UserEntity(){}
 
     public UserEntity(String username, String password){
@@ -47,6 +48,7 @@ public class UserEntity {
         this.password = password;
     }
 
+    @SuppressWarnings("unused")
     public UserEntity(String username, String password, int rank){
         this.username = username;
         this.password = password;
@@ -69,11 +71,13 @@ public class UserEntity {
         this.password = password;
     }
 
+    @SuppressWarnings("unused")
     public int getRank() {
 
         return this.rank;
     }
 
+    @SuppressWarnings("unused")
     public void setRank(int rank) {
         this.rank = rank;
     }

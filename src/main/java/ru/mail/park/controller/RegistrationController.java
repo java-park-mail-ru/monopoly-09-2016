@@ -90,11 +90,6 @@ public class RegistrationController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("Email or password is incorrect"));
     }
 
-    @RequestMapping(path = "/api/test", method = RequestMethod.GET)
-    public ResponseEntity test() throws Exception{
-
-        throw new Exception("Hello");
-    }
 }
 
 

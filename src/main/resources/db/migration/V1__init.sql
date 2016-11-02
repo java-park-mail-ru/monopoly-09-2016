@@ -1,1 +1,1 @@
-CREATE TABLE user_table (id bigserial NOT NULL, username character varying(255) NOT NULL, password character varying(255) NOT NULL, rank integer DEFAULT 1000, CONSTRAINT user_table_pkey PRIMARY KEY (id), CONSTRAINT username_key UNIQUE(username));
+CREATE TABLE user_table (id bigserial NOT NULL, username character varying(255) NOT NULL, password character varying(255) NOT NULL, rank integer DEFAULT 1, CONSTRAINT user_table_pkey PRIMARY KEY (id), CONSTRAINT username_key UNIQUE(username));

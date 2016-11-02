@@ -17,6 +17,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 
 /**
@@ -48,31 +49,16 @@ public class AccountServiceTest {
     public void addUsers() {
 
         try {
-            UserProfile user = accountService.addUser("jon", "12345");
-            assertNotNull(user);
-
-            user = accountService.addUser("miki", "12345");
-            assertNotNull(user);
-
-            user = accountService.addUser("jim", "12345");
+            UserProfile user = accountService.addUser("fill", "12345");
             assertNotNull(user);
         }catch (UserExistsException e) {
             assertNotNull(null);
         }
     }
 
-    @Test
+    @Test(expected = UserExistsException.class)
     public void addExistsUsers() {
-
-        List<UserProfile> users = accountService.getAllUsers();
-
-        try {
-            UserProfile user = accountService.addUser("jon", "12345"); // this user exists
-
-            // users = accountService.getAllUsers();
-            assertNotNull(null);
-        }catch (UserExistsException e) {
-        }
+        accountService.addUser("jon", "12345"); // this user exists
     }
 
     @Test
@@ -81,6 +67,12 @@ public class AccountServiceTest {
         assertNotNull(user);
         assertEquals("jon", user.getUsername());
         assertEquals("12345", user.getPassword());
+    }
+
+    @Test
+    public void getNotExistsUserByUsername() {
+        UserProfile user = accountService.getUser("vova");
+        assertNull(user);
     }
 
     @Test

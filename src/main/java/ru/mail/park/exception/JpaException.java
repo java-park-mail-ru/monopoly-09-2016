@@ -5,6 +5,7 @@ package ru.mail.park.exception;
  */
 public class JpaException extends RuntimeException {
 
+    @SuppressWarnings("unused")
     public JpaException() {
     }
 
@@ -16,10 +17,12 @@ public class JpaException extends RuntimeException {
         super(message, cause);
     }
 
+    @SuppressWarnings("unused")
     public JpaException(Throwable cause) {
         super(cause);
     }
 
+    @SuppressWarnings("unused")
     public JpaException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }

@@ -50,21 +50,21 @@ public class RegistrationControllerTest {
 
     @Test
     public void testLogin() throws Exception{
-        login();
+        login("andy", "12345");
     }
 
-    private MockHttpSession login() throws Exception{
+    private MockHttpSession login(String username, String password) throws Exception{
 
         MockHttpSession mockHttpSession = new MockHttpSession();
 
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/api/session")
                 .session(mockHttpSession)
-                .content("{\"username\": \"andy\", \"password\": \"12345\"}")
+                .content(String.format("{\"username\":  \"%s\", \"password\": \"%s\" }", username, password))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        assertEquals("andy", mockHttpSession.getAttribute("username"));
+        assertEquals(username, mockHttpSession.getAttribute("username"));
 
         return mockHttpSession;
     }
@@ -73,7 +73,7 @@ public class RegistrationControllerTest {
     @Test
     public void testMe() throws Exception{
 
-        MockHttpSession mockHttpSession = login();
+        MockHttpSession mockHttpSession = login("andy", "12345");
 
         mockMvc.perform(MockMvcRequestBuilders
                 .get("/api/session")
@@ -82,4 +82,35 @@ public class RegistrationControllerTest {
                 .andExpect(status().isOk());
 
     }
+
+    @Test
+    public void logout() throws Exception {
+        MockHttpSession mockHttpSession = login("andy", "12345");
+
+        assertEquals("andy", mockHttpSession.getAttribute("username"));
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .delete("/api/session")
+                .session(mockHttpSession)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+
+
+        assertEquals(mockHttpSession.isInvalid(), true);
+
+    }
+
+    @Test
+    public void registration() throws Exception{
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .post("/api/user")
+                .content("{\"username\": \"bob\", \"password\": \"12345\"}")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        login("bob", "12345");
+    }
+
+
 }
