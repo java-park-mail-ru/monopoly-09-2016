@@ -2,7 +2,7 @@ package ru.mail.park.jpa;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.mail.park.exception.JpaException;
+import ru.mail.park.exception.ServiceException;
 import ru.mail.park.exception.UserExistsException;
 import ru.mail.park.model.UserProfile;
 import ru.mail.park.services.IAccountService;
@@ -25,15 +25,19 @@ public class JpaService  implements IAccountService{
     private EntityManager em;
 
     @Override
-    public UserProfile addUser(String username, String password) throws UserExistsException{
+    public UserProfile addUser(String username, String password) throws UserExistsException, ServiceException {
         try {
             UserEntity entity = new UserEntity(username, password);
 
             em.persist(entity);
             return entity.toDto();
-        }catch (javax.persistence.PersistenceException e)
+        } catch (javax.persistence.PersistenceException e)
         {
-            throw new UserExistsException(e);
+            if(e.getCause() instanceof org.hibernate.exception.ConstraintViolationException) {
+                throw new UserExistsException(e);
+            }else {
+                throw new ServiceException(e);
+            }
         }
     }
 
@@ -58,8 +62,4 @@ public class JpaService  implements IAccountService{
                 .map(UserEntity::toDto)
                 .collect(Collectors.toList());
     }
-
-
-
-
 }

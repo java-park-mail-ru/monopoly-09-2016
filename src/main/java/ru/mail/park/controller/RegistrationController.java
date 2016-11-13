@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import ru.mail.park.exception.ServiceException;
 import ru.mail.park.exception.UserExistsException;
 import ru.mail.park.jpa.JpaService;
 import ru.mail.park.model.UserProfile;
@@ -40,10 +41,19 @@ public class RegistrationController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("Some fields is invalid"));
         }
 
-        try{
-            accountService.addUser(username, password);
+        try {
+            UserProfile user = accountService.addUser(username, password);
+            UserProfile newUser = accountService.getUser(username);
+
+            if (user.getUsername().equals(newUser.getUsername()) && user.getUsername().equals(newUser.getPassword())) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("Some fields is invalid"));
+            }
+        } catch (NullPointerException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(new ServiceException().getMessage()));
         }catch (UserExistsException e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("Email already exist"));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(e.getMessage()));
+        }catch (ServiceException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(e.getMessage()));
         }
 
         return ResponseEntity.ok(new SuccessResponse(username));
