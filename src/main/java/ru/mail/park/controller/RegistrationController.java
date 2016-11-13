@@ -1,5 +1,7 @@
 package ru.mail.park.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +25,8 @@ import javax.servlet.http.HttpSession;
 @RestController
 public class RegistrationController {
     private final IAccountService accountService;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(RegistrationController.class);
 
     @Autowired
     public RegistrationController(JpaService jpaService) {
@@ -49,33 +53,41 @@ public class RegistrationController {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("Some fields is invalid"));
             }
         } catch (NullPointerException e){
+            LOGGER.error("User is NullPointerException", e);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(new ServiceException().getMessage()));
         }catch (UserExistsException e){
+            LOGGER.error(String.format("User %s already exists", username), e);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(e.getMessage()));
         }catch (ServiceException e){
+            LOGGER.error("Database Error", e);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(e.getMessage()));
         }
 
+        LOGGER.info(String.format("User %s is create", username));
         return ResponseEntity.ok(new SuccessResponse(username));
     }
 
     @RequestMapping(path = "/api/session", method = RequestMethod.GET)
-    public ResponseEntity createSession(HttpSession httpSession) {
+    public ResponseEntity checkSession(HttpSession httpSession) {
 
-        String username = httpSession.getAttribute("username").toString();
-        if (StringUtils.isEmpty(username))
+        Object attribute = httpSession.getAttribute("username");
+        if (attribute == null)
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("Session is invalid"));
 
+        String username = attribute.toString();
         UserProfile user = accountService.getUser(username);
 
-        if (user != null) return ResponseEntity.ok(new SuccessResponse(username));
+        if (user != null) {
+
+            LOGGER.info(String.format("User %s check his session", username));
+            return ResponseEntity.ok(new SuccessResponse(username));
+        }
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse("Session is invalid"));
     }
 
     @RequestMapping(path = "/api/session", method = RequestMethod.DELETE)
     public ResponseEntity deleteSession(HttpSession httpSession) {
-
         httpSession.invalidate();
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body("{}");
     }
@@ -94,6 +106,7 @@ public class RegistrationController {
 
         if (user != null && user.getPassword().equals(password)) {
 
+            LOGGER.info(String.format("User %s logged on to the service", username));
             httpSession.setAttribute("username", username);
             return ResponseEntity.ok(new SuccessResponse(user.getUsername()));
         }
