@@ -8,7 +8,8 @@ public class UserProfile {
     private String password;
     private int rank;
 
-    public UserProfile(){}
+    public UserProfile() {
+    }
 
     public UserProfile(String username, String password) {
         this.username = username;
@@ -21,7 +22,9 @@ public class UserProfile {
         this.rank = rank;
     }
 
-    public String getUsername() { return username; }
+    public String getUsername() {
+        return username;
+    }
 
     public String getPassword() {
         return password;

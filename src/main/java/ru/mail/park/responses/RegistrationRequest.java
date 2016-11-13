@@ -8,7 +8,8 @@ public class RegistrationRequest {
     private String password;
 
     @SuppressWarnings("unused")
-    public RegistrationRequest () {}
+    public RegistrationRequest() {
+    }
 
     @SuppressWarnings("unused")
     public RegistrationRequest(String username, String password) {

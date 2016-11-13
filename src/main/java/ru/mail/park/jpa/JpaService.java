@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
-public class JpaService  implements IAccountService{
+public class JpaService implements IAccountService {
 
     @PersistenceContext
     private EntityManager em;
@@ -31,11 +31,10 @@ public class JpaService  implements IAccountService{
 
             em.persist(entity);
             return entity.toDto();
-        } catch (javax.persistence.PersistenceException e)
-        {
-            if(e.getCause() instanceof org.hibernate.exception.ConstraintViolationException) {
+        } catch (javax.persistence.PersistenceException e) {
+            if (e.getCause() instanceof org.hibernate.exception.ConstraintViolationException) {
                 throw new UserExistsException(e);
-            }else {
+            } else {
                 throw new ServiceException(e);
             }
         }
@@ -43,19 +42,19 @@ public class JpaService  implements IAccountService{
 
 
     @Override
-    public UserProfile getUser(String username){
+    public UserProfile getUser(String username) {
         try {
             return ((UserEntity) em.createQuery("SELECT u FROM UserEntity u WHERE u.username = :custUsername")
                     .setParameter("custUsername", username)
                     .setMaxResults(1).getSingleResult()).toDto();
-        }catch(NoResultException e) {
+        } catch (NoResultException e) {
             return null;
         }
 
     }
 
     @Override
-    public List<UserProfile> getAllUsers(){
+    public List<UserProfile> getAllUsers() {
         return em.createQuery("select u from UserEntity u", UserEntity.class)
                 .getResultList()
                 .stream()

@@ -41,15 +41,16 @@ public class UserEntity {
     }
 
     @SuppressWarnings("unused")
-    public UserEntity(){}
+    public UserEntity() {
+    }
 
-    public UserEntity(String username, String password){
+    public UserEntity(String username, String password) {
         this.username = username;
         this.password = password;
     }
 
     @SuppressWarnings("unused")
-    public UserEntity(String username, String password, int rank){
+    public UserEntity(String username, String password, int rank) {
         this.username = username;
         this.password = password;
         this.rank = rank;

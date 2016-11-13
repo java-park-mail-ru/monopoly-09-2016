@@ -49,16 +49,16 @@ public class RegistrationController {
             UserProfile user = accountService.addUser(username, password);
             UserProfile newUser = accountService.getUser(username);
 
+            if (user == null || newUser == null)
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("Some fields is invalid"));
+
             if (user.getUsername().equals(newUser.getUsername()) && user.getUsername().equals(newUser.getPassword())) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("Some fields is invalid"));
             }
-        } catch (NullPointerException e){
-            LOGGER.error("User is NullPointerException", e);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(new ServiceException().getMessage()));
-        }catch (UserExistsException e){
+        } catch (UserExistsException e) {
             LOGGER.error(String.format("User %s already exists", username), e);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(e.getMessage()));
-        }catch (ServiceException e){
+        } catch (ServiceException e) {
             LOGGER.error("Database Error", e);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(e.getMessage()));
         }
@@ -78,7 +78,6 @@ public class RegistrationController {
         UserProfile user = accountService.getUser(username);
 
         if (user != null) {
-
             LOGGER.info(String.format("User %s check his session", username));
             return ResponseEntity.ok(new SuccessResponse(username));
         }
@@ -105,14 +104,12 @@ public class RegistrationController {
         final UserProfile user = accountService.getUser(username);
 
         if (user != null && user.getPassword().equals(password)) {
-
             LOGGER.info(String.format("User %s logged on to the service", username));
             httpSession.setAttribute("username", username);
             return ResponseEntity.ok(new SuccessResponse(user.getUsername()));
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse("Email or password is incorrect"));
     }
-
 }
 
 
